@@ -14,7 +14,11 @@
 				<button type="submit" class="btn btn-primary">Click</button>
 			</div>
 		</form>
-		{{ todos }}
+		<div class="card mt-2" :key="t.id" v-for="t in todos">
+			<div class="card-body p-2">
+				{{ t.subject }}
+			</div>
+		</div>
 	</div>
 </template>
 
