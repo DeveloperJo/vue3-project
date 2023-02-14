@@ -1,4 +1,7 @@
 <template>
+	<div v-show="toggle">true</div>
+	<div v-show="!toggle">false</div>
+	<button @click="onToggle">Toggle</button>
 	<div class="container">
 		<h2>To-Do List</h2>
 		<form class="d-flex" @submit.prevent="onSubmit">
@@ -27,6 +30,7 @@ import { ref } from 'vue';
 
 export default {
 	setup() {
+		const toggle = ref(false);
 		const todo = ref(''); // ref는 string, int, object, list 모든 타입을 사용할 수 있다. 값을 치환할 때는 value를 이용해야 한다.
 		const todos = ref([]);
 
@@ -38,10 +42,16 @@ export default {
 			});
 		};
 
+		const onToggle = () => {
+			toggle.value = !toggle.value;
+		};
+
 		return {
 			todo,
 			todos,
 			onSubmit,
+			toggle,
+			onToggle,
 		};
 	},
 };
