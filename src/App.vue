@@ -1,26 +1,37 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+	<div>
+		<input type="text" :value="name" @input="updateName" />
+		<button class="btn btn-primary" @click="onSubmit">Click</button>
+	</div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { ref } from 'vue';
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+	setup() {
+		const name = ref('Worksheets 1'); // ref는 string, int, object, list 모든 타입을 사용할 수 있다. 값을 치환할 때는 value를 이용해야 한다.
+
+		const onSubmit = () => {
+			console.log(name);
+		};
+
+		const updateName = (e) => {
+			//console.log('updateName : ' + name.value);
+			console.log(e);
+		};
+
+		return {
+			name,
+			updateName,
+			onSubmit,
+		};
+	},
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.name {
+	color: red;
 }
 </style>
