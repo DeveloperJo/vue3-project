@@ -1,20 +1,22 @@
 <template>
-	<div v-if="toggle">true</div>
-	<div v-else>false</div>
-	<button @click="onToggle">Toggle</button>
 	<div class="container">
 		<h2>To-Do List</h2>
-		<form class="d-flex" @submit.prevent="onSubmit">
-			<div class="flex-grow-1 mr-2">
-				<input
-					class="form-control"
-					type="text"
-					v-model="todo"
-					placeholder="Type new To-Do"
-				/>
+		<form @submit.prevent="onSubmit">
+			<div class="d-flex">
+				<div class="flex-grow-1 mr-2">
+					<input
+						class="form-control"
+						type="text"
+						v-model="todo"
+						placeholder="Type new To-Do"
+					/>
+				</div>
+				<div>
+					<button type="submit" class="btn btn-primary">Add</button>
+				</div>
 			</div>
-			<div>
-				<button type="submit" class="btn btn-primary">Click</button>
+			<div class="text-danger" v-show="hasError">
+				This field cannot be empty
 			</div>
 		</form>
 		<div class="card mt-2" :key="t.id" v-for="t in todos">
@@ -30,28 +32,28 @@ import { ref } from 'vue';
 
 export default {
 	setup() {
-		const toggle = ref(false);
 		const todo = ref(''); // ref는 string, int, object, list 모든 타입을 사용할 수 있다. 값을 치환할 때는 value를 이용해야 한다.
 		const todos = ref([]);
+		let hasError = ref(false);
 
 		const onSubmit = () => {
 			console.log(todo.value);
-			todos.value.push({
-				id: Date.now(),
-				subject: todo.value,
-			});
-		};
-
-		const onToggle = () => {
-			toggle.value = !toggle.value;
+			const keyword = todo.value;
+			if (keyword == '') hasError.value = true;
+			else {
+				todos.value.push({
+					id: Date.now(),
+					subject: todo.value,
+				});
+				hasError.value = false;
+			}
 		};
 
 		return {
 			todo,
 			todos,
 			onSubmit,
-			toggle,
-			onToggle,
+			hasError,
 		};
 	},
 };
