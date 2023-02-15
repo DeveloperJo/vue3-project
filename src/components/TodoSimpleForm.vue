@@ -24,6 +24,7 @@
 <script>
 import { ref } from 'vue';
 export default {
+	emits: ['add-todo'],
 	setup(props, context) {
 		const todo = ref(''); // ref는 string, int, object, list 모든 타입을 사용할 수 있다. 값을 치환할 때는 value를 이용해야 한다.
 		const hasError = ref(false);
