@@ -21,7 +21,15 @@
 		</form>
 		<div class="card mt-2" :key="t.id" v-for="t in todos">
 			<div class="card-body p-2">
-				{{ t.subject }}
+				<div class="form-check">
+					<input
+						class="form-check-input"
+						type="checkbox"
+						id="check"
+						v-model="t.completed"
+					/>
+					<label class="form-check-label" for="check">{{ t.subject }}</label>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -34,7 +42,7 @@ export default {
 	setup() {
 		const todo = ref(''); // ref는 string, int, object, list 모든 타입을 사용할 수 있다. 값을 치환할 때는 value를 이용해야 한다.
 		const todos = ref([]);
-		let hasError = ref(false);
+		const hasError = ref(false);
 
 		const onSubmit = () => {
 			console.log(todo.value);
@@ -44,8 +52,10 @@ export default {
 				todos.value.push({
 					id: Date.now(),
 					subject: todo.value,
+					completed: false,
 				});
 				hasError.value = false;
+				todo.value = '';
 			}
 		};
 
