@@ -30,7 +30,7 @@
 					/>
 					<label
 						class="form-check-label"
-						:style="t.completed ? todoStyle : {}"
+						:class="{ todo: t.completed }"
 						for="check"
 						>{{ t.subject }}</label
 					>
@@ -80,7 +80,8 @@ export default {
 </script>
 
 <style>
-.name {
-	color: red;
+.todo {
+	color: gray;
+	text-decoration: line-through;
 }
 </style>
