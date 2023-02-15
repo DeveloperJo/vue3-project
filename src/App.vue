@@ -9,7 +9,7 @@
 		/>
 		<hr />
 		<TodoSimpleForm @add-todo="addTodo" />
-		<div style="color: red">{{ error }}</div>
+		<div v-if="error != ''" style="color: red">{{ error }}</div>
 		<div v-if="!filteredTodos.length">To-Do가 없습니다.</div>
 		<TodoList
 			:todos="filteredTodos"
@@ -39,26 +39,31 @@ export default {
 			color: 'gray',
 		};
 
-		const addTodo = (todo) => {
+		const addTodo = async (todo) => {
 			// 데이터베이스 Todo 저장 - 비동기
 			error.value = '';
-			axios
-				.post('http://localhost:3000/todos', {
+			try {
+				const res = await axios.post('http://localhost:3000/todos', {
 					id: todo.id,
 					subject: todo.subject,
 					completed: todo.completed,
-				})
-				.then((res) => {
-					console.log(res);
-					if (res.status == 201) {
-						// todo에 array 저장
-						todos.value.push(res.data);
-					}
-				})
-				.catch((err) => {
-					console.log(err);
-					error.value = 'Something went wrong. ' + err.message;
 				});
+				todos.value.push(res.data);
+			} catch (err) {
+				error.value = 'Something went wrong. ' + err.message;
+			}
+
+			// .then((res) => {
+			// 	console.log(res);
+			// 	if (res.status == 201) {
+			// 		// todo에 array 저장
+			// 		todos.value.push(res.data);
+			// 	}
+			// })
+			// .catch((err) => {
+			// 	console.log(err);
+			// 	error.value = 'Something went wrong. ' + err.message;
+			// });
 		};
 
 		const toggleTodo = (index) => {
