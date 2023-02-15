@@ -9,7 +9,8 @@
 		/>
 		<hr />
 		<TodoSimpleForm @add-todo="addTodo" />
-		<div v-if="!filteredTodos.length">추가된 To-Do가 없습니다.</div>
+		<div style="color: red">{{ error }}</div>
+		<div v-if="!filteredTodos.length">To-Do가 없습니다.</div>
 		<TodoList
 			:todos="filteredTodos"
 			@toggle-todo="toggleTodo"
@@ -22,6 +23,7 @@
 import { ref, computed } from 'vue';
 import TodoSimpleForm from './components/TodoSimpleForm.vue';
 import TodoList from './components/TodoList.vue';
+import axios from 'axios';
 
 export default {
 	components: {
@@ -30,6 +32,7 @@ export default {
 	},
 	setup() {
 		const todos = ref([]);
+		const error = ref('');
 
 		const todoStyle = {
 			textDecoration: 'line-through',
@@ -37,16 +40,34 @@ export default {
 		};
 
 		const addTodo = (todo) => {
-			console.log(todo);
-			todos.value.push(todo);
+			// 데이터베이스 Todo 저장 - 비동기
+			error.value = '';
+			axios
+				.post('http://localhost:3000/todos', {
+					id: todo.id,
+					subject: todo.subject,
+					completed: todo.completed,
+				})
+				.then((res) => {
+					console.log(res);
+					if (res.status == 201) {
+						// todo에 array 저장
+						todos.value.push(res.data);
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+					error.value = 'Something went wrong. ' + err.message;
+				});
 		};
 
 		const toggleTodo = (index) => {
-			todos.value[index].completed = !todos.value[index].completed;
+			filteredTodos.value[index].completed =
+				!filteredTodos.value[index].completed;
 		};
 
 		const deleteTodo = (index) => {
-			todos.value.splice(index, 1);
+			filteredTodos.value.splice(index, 1);
 		};
 
 		const searchText = ref('');
@@ -68,6 +89,7 @@ export default {
 			deleteTodo,
 			searchText,
 			filteredTodos,
+			error,
 		};
 	},
 };
