@@ -28,7 +28,12 @@
 						id="check"
 						v-model="t.completed"
 					/>
-					<label class="form-check-label" for="check">{{ t.subject }}</label>
+					<label
+						class="form-check-label"
+						:style="t.completed ? todoStyle : {}"
+						for="check"
+						>{{ t.subject }}</label
+					>
 				</div>
 			</div>
 		</div>
@@ -43,6 +48,10 @@ export default {
 		const todo = ref(''); // ref는 string, int, object, list 모든 타입을 사용할 수 있다. 값을 치환할 때는 value를 이용해야 한다.
 		const todos = ref([]);
 		const hasError = ref(false);
+		const todoStyle = {
+			textDecoration: 'line-through',
+			color: 'gray',
+		};
 
 		const onSubmit = () => {
 			console.log(todo.value);
@@ -62,6 +71,7 @@ export default {
 		return {
 			todo,
 			todos,
+			todoStyle,
 			onSubmit,
 			hasError,
 		};
