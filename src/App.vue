@@ -74,9 +74,19 @@ export default {
 			// });
 		};
 
-		const toggleTodo = (index) => {
-			filteredTodos.value[index].completed =
-				!filteredTodos.value[index].completed;
+		const toggleTodo = async (index) => {
+			const id = filteredTodos.value[index].id;
+
+			error.value = '';
+			try {
+				await axios.patch('http://localhost:3000/todos/' + id, {
+					completed: !filteredTodos.value[index].completed,
+				});
+				filteredTodos.value[index].completed =
+					!filteredTodos.value[index].completed;
+			} catch (err) {
+				error.value = 'Toggle Todo - Something went wrong. ' + err.message;
+			}
 		};
 
 		const deleteTodo = async (index) => {
