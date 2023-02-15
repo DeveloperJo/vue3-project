@@ -1,24 +1,7 @@
 <template>
 	<div class="container">
 		<h2>To-Do List</h2>
-		<form @submit.prevent="onSubmit">
-			<div class="d-flex">
-				<div class="flex-grow-1 mr-2">
-					<input
-						class="form-control"
-						type="text"
-						v-model="todo"
-						placeholder="Type new To-Do"
-					/>
-				</div>
-				<div>
-					<button type="submit" class="btn btn-primary">Add</button>
-				</div>
-			</div>
-			<div class="text-danger" v-show="hasError">
-				This field cannot be empty
-			</div>
-		</form>
+		<TodoSimpleForm />
 		<div v-if="!todos.length">추가된 To-Do가 없습니다.</div>
 		<div class="card mt-2" :key="t.id" v-for="(t, index) in todos">
 			<div class="card-body p-2 d-flex align-items-center">
@@ -48,8 +31,12 @@
 
 <script>
 import { ref } from 'vue';
+import TodoSimpleForm from './components/TodoSimpleForm.vue';
 
 export default {
+	components: {
+		TodoSimpleForm,
+	},
 	setup() {
 		const todo = ref(''); // ref는 string, int, object, list 모든 타입을 사용할 수 있다. 값을 치환할 때는 value를 이용해야 한다.
 		const todos = ref([]);
