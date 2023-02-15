@@ -19,9 +19,10 @@
 				This field cannot be empty
 			</div>
 		</form>
-		<div class="card mt-2" :key="t.id" v-for="t in todos">
-			<div class="card-body p-2">
-				<div class="form-check">
+		<div v-if="!todos.length">추가된 To-Do가 없습니다.</div>
+		<div class="card mt-2" :key="t.id" v-for="(t, index) in todos">
+			<div class="card-body p-2 d-flex align-items-center">
+				<div class="form-check flex-grow-1">
 					<input
 						class="form-check-input"
 						type="checkbox"
@@ -34,6 +35,11 @@
 						for="check"
 						>{{ t.subject }}</label
 					>
+				</div>
+				<div>
+					<button class="btn btn-danger btn-small" @click="deleteTodo(index)">
+						Delete
+					</button>
 				</div>
 			</div>
 		</div>
@@ -54,7 +60,6 @@ export default {
 		};
 
 		const onSubmit = () => {
-			console.log(todo.value);
 			const keyword = todo.value;
 			if (keyword == '') hasError.value = true;
 			else {
@@ -68,11 +73,16 @@ export default {
 			}
 		};
 
+		const deleteTodo = (index) => {
+			todos.value.splice(index, 1);
+		};
+
 		return {
 			todo,
 			todos,
 			todoStyle,
 			onSubmit,
+			deleteTodo,
 			hasError,
 		};
 	},
