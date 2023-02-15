@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<h2>To-Do List</h2>
-		<TodoSimpleForm />
+		<TodoSimpleForm @add-todo="addTodo" />
 		<div v-if="!todos.length">추가된 To-Do가 없습니다.</div>
 		<div class="card mt-2" :key="t.id" v-for="(t, index) in todos">
 			<div class="card-body p-2 d-flex align-items-center">
@@ -38,26 +38,16 @@ export default {
 		TodoSimpleForm,
 	},
 	setup() {
-		const todo = ref(''); // ref는 string, int, object, list 모든 타입을 사용할 수 있다. 값을 치환할 때는 value를 이용해야 한다.
 		const todos = ref([]);
-		const hasError = ref(false);
+
 		const todoStyle = {
 			textDecoration: 'line-through',
 			color: 'gray',
 		};
 
-		const onSubmit = () => {
-			const keyword = todo.value;
-			if (keyword == '') hasError.value = true;
-			else {
-				todos.value.push({
-					id: Date.now(),
-					subject: todo.value,
-					completed: false,
-				});
-				hasError.value = false;
-				todo.value = '';
-			}
+		const addTodo = (todo) => {
+			console.log(todo);
+			todos.value.push(todo);
 		};
 
 		const deleteTodo = (index) => {
@@ -65,12 +55,10 @@ export default {
 		};
 
 		return {
-			todo,
 			todos,
 			todoStyle,
-			onSubmit,
+			addTodo,
 			deleteTodo,
-			hasError,
 		};
 	},
 };
