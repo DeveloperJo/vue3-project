@@ -44,7 +44,6 @@ export default {
 				error.value = 'Get Todo - Something went wrong. ' + err.message;
 			}
 		};
-
 		getTodos();
 
 		const addTodo = async (todo) => {
@@ -80,8 +79,16 @@ export default {
 				!filteredTodos.value[index].completed;
 		};
 
-		const deleteTodo = (index) => {
-			filteredTodos.value.splice(index, 1);
+		const deleteTodo = async (index) => {
+			const id = filteredTodos.value[index].id;
+
+			error.value = '';
+			try {
+				await axios.delete('http://localhost:3000/todos/' + id);
+				filteredTodos.value.splice(index, 1);
+			} catch (err) {
+				error.value = 'Delete Todo - Something went wrong. ' + err.message;
+			}
 		};
 
 		const searchText = ref('');
