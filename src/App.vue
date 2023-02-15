@@ -9,7 +9,7 @@
 		/>
 		<hr />
 		<TodoSimpleForm @add-todo="addTodo" />
-		<div v-if="error != ''" style="color: red">{{ error }}</div>
+		<div v-if="error != ''" class="text-danger">{{ error }}</div>
 		<div v-if="!filteredTodos.length">To-Do가 없습니다.</div>
 		<TodoList
 			:todos="filteredTodos"
@@ -34,23 +34,32 @@ export default {
 		const todos = ref([]);
 		const error = ref('');
 
-		const todoStyle = {
-			textDecoration: 'line-through',
-			color: 'gray',
+		const getTodos = async () => {
+			error.value = '';
+			try {
+				const res = await axios.get('http://localhost:3000/todos');
+				todos.value = res.data;
+				console.log(res.data);
+			} catch (err) {
+				error.value = 'Get Todo - Something went wrong. ' + err.message;
+			}
 		};
+
+		getTodos();
 
 		const addTodo = async (todo) => {
 			// 데이터베이스 Todo 저장 - 비동기
 			error.value = '';
 			try {
 				const res = await axios.post('http://localhost:3000/todos', {
-					id: todo.id,
+					//id: todo.id,
 					subject: todo.subject,
 					completed: todo.completed,
 				});
 				todos.value.push(res.data);
+				console.log(res);
 			} catch (err) {
-				error.value = 'Something went wrong. ' + err.message;
+				error.value = 'Add Todo - Something went wrong. ' + err.message;
 			}
 
 			// .then((res) => {
@@ -88,7 +97,6 @@ export default {
 
 		return {
 			todos,
-			todoStyle,
 			addTodo,
 			toggleTodo,
 			deleteTodo,
@@ -100,9 +108,4 @@ export default {
 };
 </script>
 
-<style>
-.todo {
-	color: gray;
-	text-decoration: line-through;
-}
-</style>
+<style></style>
