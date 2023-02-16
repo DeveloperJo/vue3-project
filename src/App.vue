@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import TodoSimpleForm from './components/TodoSimpleForm.vue';
 import TodoList from './components/TodoList.vue';
 import axios from 'axios';
@@ -66,12 +66,16 @@ export default {
 	setup() {
 		const todos = ref([]);
 		const error = ref('');
-		const totalPage = ref(0);
+		const numberOfTodos = ref(0);
 		const limit = 5;
 		const currentPage = ref(1);
 
+		watch(currentPage, (currentPage, prev) => {
+			console.log(currentPage, prev);
+		});
+
 		const numberOfPages = computed(() => {
-			return Math.ceil(totalPage.value / limit);
+			return Math.ceil(numberOfTodos.value / limit);
 		});
 
 		const getTodos = async (page = currentPage.value) => {
@@ -81,10 +85,10 @@ export default {
 					`http://localhost:3000/todos?_page=${page}&_limit=${limit}`
 				);
 				//console.log(res);
-				totalPage.value = res.headers['x-total-count'];
+				numberOfTodos.value = res.headers['x-total-count'];
 				todos.value = res.data;
 				currentPage.value = page;
-				console.log(res.data);
+				//console.log(res.data);
 			} catch (err) {
 				error.value = 'Get Todo - Something went wrong. ' + err.message;
 			}

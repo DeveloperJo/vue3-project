@@ -32,7 +32,7 @@ export default {
 	// props: ['todos'],
 	props: {
 		todos: {
-			type: Object,
+			type: Array,
 			required: true,
 		},
 	},
