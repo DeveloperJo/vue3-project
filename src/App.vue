@@ -79,7 +79,7 @@ export default {
 			error.value = '';
 			try {
 				const res = await axios.get(
-					`http://localhost:3000/todos?subject_like=${searchText.value}&_page=${page}&_limit=${limit}`
+					`http://localhost:3000/todos?_sort=id&_order=desc&subject_like=${searchText.value}&_page=${page}&_limit=${limit}`
 				);
 				// console.log(res);
 				numberOfTodos.value = res.headers['x-total-count'];
@@ -96,16 +96,23 @@ export default {
 			getTodos(1);
 		});
 
+		watch([currentPage, numberOfPages], () => {
+			//console.log(currentPage.value, numberOfPages.value);
+			if (currentPage.value > numberOfPages.value)
+				getTodos(numberOfPages.value);
+		});
+
 		const addTodo = async (todo) => {
 			// 데이터베이스 Todo 저장 - 비동기
 			error.value = '';
 			try {
-				const res = await axios.post('http://localhost:3000/todos', {
+				await axios.post('http://localhost:3000/todos', {
 					//id: todo.id,
 					subject: todo.subject,
 					completed: todo.completed,
 				});
-				todos.value.push(res.data);
+				getTodos(1);
+				//todos.value.push(res.data);
 				//console.log(res);
 			} catch (err) {
 				error.value = 'Add Todo - Something went wrong. ' + err.message;
@@ -144,7 +151,8 @@ export default {
 			error.value = '';
 			try {
 				await axios.delete('http://localhost:3000/todos/' + id);
-				todos.value.splice(index, 1);
+				//todos.value.splice(index, 1);
+				getTodos(currentPage.value);
 			} catch (err) {
 				error.value = 'Delete Todo - Something went wrong. ' + err.message;
 			}
