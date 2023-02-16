@@ -6,6 +6,7 @@
 			type="text"
 			v-model="searchText"
 			placeholder="Search"
+			@keyup.enter="searchTodo"
 		/>
 		<hr />
 		<TodoSimpleForm @add-todo="addTodo" />
@@ -92,8 +93,17 @@ export default {
 		};
 		getTodos();
 
-		watch(searchText, () => {
+		let timeout = null;
+		const searchTodo = () => {
+			clearTimeout(timeout);
 			getTodos(1);
+		};
+
+		watch(searchText, () => {
+			clearTimeout(timeout);
+			timeout = setTimeout(() => {
+				getTodos(1);
+			}, 500);
 		});
 
 		watch([currentPage, numberOfPages], () => {
@@ -171,6 +181,7 @@ export default {
 		return {
 			todos,
 			getTodos,
+			searchTodo,
 			addTodo,
 			toggleTodo,
 			deleteTodo,
