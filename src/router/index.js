@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/HomeView.vue';
 import Todos from '../views/todos/IndexView.vue';
+import Todo from '../views/todos/_idView.vue';
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -14,6 +15,11 @@ const router = createRouter({
 			path: '/todos',
 			name: 'todos',
 			component: Todos,
+		},
+		{
+			path: '/todos/:id',
+			name: 'todo',
+			component: Todo,
 		},
 	],
 });
