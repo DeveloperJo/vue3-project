@@ -2,11 +2,16 @@
 	<div>
 		<nav class="navbar navbar-expand-lg bg-body-tertiary">
 			<div class="container-fluid">
-				<router-link class="navbar-brand" to="/">Dev. Jo</router-link>
+				<router-link class="navbar-brand" :to="{ name: 'Home' }"
+					>Dev. Jo</router-link
+				>
 
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item">
-						<router-link class="nav-link active" aria-current="page" to="/todos"
+						<router-link
+							class="nav-link active"
+							aria-current="page"
+							:to="{ name: 'Todos' }"
 							>Todos</router-link
 						>
 					</li>
