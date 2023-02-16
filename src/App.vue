@@ -1,54 +1,57 @@
 <template>
-	<div class="container">
-		<h2>To-Do List</h2>
-		<input
-			class="form-control"
-			type="text"
-			v-model="searchText"
-			placeholder="Search"
-			@keyup.enter="searchTodo"
-		/>
-		<hr />
-		<TodoSimpleForm @add-todo="addTodo" />
-		<div v-if="error != ''" class="text-danger">{{ error }}</div>
-		<div v-if="!todos.length">To-Do가 없습니다.</div>
-		<TodoList
-			:todos="todos"
-			@toggle-todo="toggleTodo"
-			@delete-todo="deleteTodo"
-		/>
-		<hr />
-		<div>
-			<nav aria-label="Page navigation example">
-				<ul class="pagination">
-					<li v-if="currentPage !== 1" class="page-item">
-						<a
-							class="page-link"
-							@click="getTodos(currentPage - 1)"
-							aria-label="Previous"
+	<div>
+		<router-view />
+		<div class="container">
+			<h2>To-Do List</h2>
+			<input
+				class="form-control"
+				type="text"
+				v-model="searchText"
+				placeholder="Search"
+				@keyup.enter="searchTodo"
+			/>
+			<hr />
+			<TodoSimpleForm @add-todo="addTodo" />
+			<div v-if="error != ''" class="text-danger">{{ error }}</div>
+			<div v-if="!todos.length">To-Do가 없습니다.</div>
+			<TodoList
+				:todos="todos"
+				@toggle-todo="toggleTodo"
+				@delete-todo="deleteTodo"
+			/>
+			<hr />
+			<div>
+				<nav aria-label="Page navigation example">
+					<ul class="pagination">
+						<li v-if="currentPage !== 1" class="page-item">
+							<a
+								class="page-link"
+								@click="getTodos(currentPage - 1)"
+								aria-label="Previous"
+							>
+								<span aria-hidden="true">&laquo;</span>
+							</a>
+						</li>
+						<li
+							class="page-item"
+							:class="currentPage === page ? 'active' : ''"
+							v-for="page in numberOfPages"
+							:key="page"
 						>
-							<span aria-hidden="true">&laquo;</span>
-						</a>
-					</li>
-					<li
-						class="page-item"
-						:class="currentPage === page ? 'active' : ''"
-						v-for="page in numberOfPages"
-						:key="page"
-					>
-						<a class="page-link" @click="getTodos(page)">{{ page }}</a>
-					</li>
-					<li v-if="currentPage !== numberOfPages" class="page-item">
-						<a
-							class="page-link"
-							@click="getTodos(currentPage + 1)"
-							aria-label="Next"
-						>
-							<span aria-hidden="true">&raquo;</span>
-						</a>
-					</li>
-				</ul>
-			</nav>
+							<a class="page-link" @click="getTodos(page)">{{ page }}</a>
+						</li>
+						<li v-if="currentPage !== numberOfPages" class="page-item">
+							<a
+								class="page-link"
+								@click="getTodos(currentPage + 1)"
+								aria-label="Next"
+							>
+								<span aria-hidden="true">&raquo;</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
 		</div>
 	</div>
 </template>
