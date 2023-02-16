@@ -16,6 +16,39 @@
 			@toggle-todo="toggleTodo"
 			@delete-todo="deleteTodo"
 		/>
+		<hr />
+		<div>
+			<nav aria-label="Page navigation example">
+				<ul class="pagination">
+					<li v-if="currentPage !== 1" class="page-item">
+						<a
+							class="page-link"
+							@click="getTodos(currentPage - 1)"
+							aria-label="Previous"
+						>
+							<span aria-hidden="true">&laquo;</span>
+						</a>
+					</li>
+					<li
+						class="page-item"
+						:class="currentPage === page ? 'active' : ''"
+						v-for="page in numberOfPages"
+						:key="page"
+					>
+						<a class="page-link" @click="getTodos(page)">{{ page }}</a>
+					</li>
+					<li v-if="currentPage !== numberOfPages" class="page-item">
+						<a
+							class="page-link"
+							@click="getTodos(currentPage + 1)"
+							aria-label="Next"
+						>
+							<span aria-hidden="true">&raquo;</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
 	</div>
 </template>
 
@@ -33,12 +66,24 @@ export default {
 	setup() {
 		const todos = ref([]);
 		const error = ref('');
+		const totalPage = ref(0);
+		const limit = 5;
+		const currentPage = ref(1);
 
-		const getTodos = async () => {
+		const numberOfPages = computed(() => {
+			return Math.ceil(totalPage.value / limit);
+		});
+
+		const getTodos = async (page = currentPage.value) => {
 			error.value = '';
 			try {
-				const res = await axios.get('http://localhost:3000/todos');
+				const res = await axios.get(
+					`http://localhost:3000/todos?_page=${page}&_limit=${limit}`
+				);
+				//console.log(res);
+				totalPage.value = res.headers['x-total-count'];
 				todos.value = res.data;
+				currentPage.value = page;
 				console.log(res.data);
 			} catch (err) {
 				error.value = 'Get Todo - Something went wrong. ' + err.message;
@@ -56,7 +101,7 @@ export default {
 					completed: todo.completed,
 				});
 				todos.value.push(res.data);
-				console.log(res);
+				//console.log(res);
 			} catch (err) {
 				error.value = 'Add Todo - Something went wrong. ' + err.message;
 			}
@@ -114,15 +159,22 @@ export default {
 
 		return {
 			todos,
+			getTodos,
 			addTodo,
 			toggleTodo,
 			deleteTodo,
 			searchText,
 			filteredTodos,
+			numberOfPages,
+			currentPage,
 			error,
 		};
 	},
 };
 </script>
 
-<style></style>
+<style scoped>
+a.page-link {
+	cursor: pointer;
+}
+</style>
