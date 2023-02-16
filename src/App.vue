@@ -10,9 +10,9 @@
 		<hr />
 		<TodoSimpleForm @add-todo="addTodo" />
 		<div v-if="error != ''" class="text-danger">{{ error }}</div>
-		<div v-if="!filteredTodos.length">To-Do가 없습니다.</div>
+		<div v-if="!todos.length">To-Do가 없습니다.</div>
 		<TodoList
-			:todos="filteredTodos"
+			:todos="todos"
 			@toggle-todo="toggleTodo"
 			@delete-todo="deleteTodo"
 		/>
@@ -69,10 +69,7 @@ export default {
 		const numberOfTodos = ref(0);
 		const limit = 5;
 		const currentPage = ref(1);
-
-		watch(currentPage, (currentPage, prev) => {
-			console.log(currentPage, prev);
-		});
+		const searchText = ref('');
 
 		const numberOfPages = computed(() => {
 			return Math.ceil(numberOfTodos.value / limit);
@@ -82,18 +79,22 @@ export default {
 			error.value = '';
 			try {
 				const res = await axios.get(
-					`http://localhost:3000/todos?_page=${page}&_limit=${limit}`
+					`http://localhost:3000/todos?subject_like=${searchText.value}&_page=${page}&_limit=${limit}`
 				);
-				//console.log(res);
+				// console.log(res);
 				numberOfTodos.value = res.headers['x-total-count'];
 				todos.value = res.data;
 				currentPage.value = page;
-				//console.log(res.data);
+				console.log(res.data);
 			} catch (err) {
 				error.value = 'Get Todo - Something went wrong. ' + err.message;
 			}
 		};
 		getTodos();
+
+		watch(searchText, () => {
+			getTodos(1);
+		});
 
 		const addTodo = async (todo) => {
 			// 데이터베이스 Todo 저장 - 비동기
@@ -124,42 +125,40 @@ export default {
 		};
 
 		const toggleTodo = async (index) => {
-			const id = filteredTodos.value[index].id;
+			const id = todos.value[index].id;
 
 			error.value = '';
 			try {
 				await axios.patch('http://localhost:3000/todos/' + id, {
-					completed: !filteredTodos.value[index].completed,
+					completed: !todos.value[index].completed,
 				});
-				filteredTodos.value[index].completed =
-					!filteredTodos.value[index].completed;
+				todos.value[index].completed = !todos.value[index].completed;
 			} catch (err) {
 				error.value = 'Toggle Todo - Something went wrong. ' + err.message;
 			}
 		};
 
 		const deleteTodo = async (index) => {
-			const id = filteredTodos.value[index].id;
+			const id = todos.value[index].id;
 
 			error.value = '';
 			try {
 				await axios.delete('http://localhost:3000/todos/' + id);
-				filteredTodos.value.splice(index, 1);
+				todos.value.splice(index, 1);
 			} catch (err) {
 				error.value = 'Delete Todo - Something went wrong. ' + err.message;
 			}
 		};
 
-		const searchText = ref('');
-		const filteredTodos = computed(() => {
-			if (searchText.value) {
-				return todos.value.filter((todo) => {
-					return todo.subject.includes(searchText.value);
-				});
-			}
+		// const filteredTodos = computed(() => {
+		// 	if (searchText.value) {
+		// 		return todos.value.filter((todo) => {
+		// 			return todo.subject.includes(searchText.value);
+		// 		});
+		// 	}
 
-			return todos.value;
-		});
+		// 	return todos.value;
+		// });
 
 		return {
 			todos,
@@ -168,7 +167,7 @@ export default {
 			toggleTodo,
 			deleteTodo,
 			searchText,
-			filteredTodos,
+			// filteredTodos,
 			numberOfPages,
 			currentPage,
 			error,
