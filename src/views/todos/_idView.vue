@@ -1,14 +1,82 @@
 <template>
-	<div>Todo Page</div>
+	<div>
+		<h2>Todo Page</h2>
+		<hr />
+		<div v-if="loading">Loading ...</div>
+		<form v-else>
+			<div class="row">
+				<div class="col-6">
+					<div class="form-group">
+						<label>Subject</label>
+						<input type="text" class="form-control" v-model="todo.subject" />
+					</div>
+				</div>
+				<div class="col-6">
+					<div class="form-group">
+						<label>Status</label>
+						<div>
+							<button
+								class="btn"
+								:class="todo.completed == true ? 'btn-success' : 'btn-danger'"
+								@click.prevent="toggleTodoStatus"
+							>
+								{{ todo.completed == true ? 'Completed' : 'Incompleted' }}
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<button class="btn btn-primary">Save</button>
+		</form>
+	</div>
 </template>
 
 <script>
+import { ref } from 'vue';
 import { useRoute } from 'vue-router';
+import axios from 'axios';
 
 export default {
 	setup() {
+		const todo = ref(null);
+		const loading = ref(true);
+
 		const route = useRoute();
-		console.log(route.params.id);
+
+		const id = route.params.id;
+
+		const error = ref('');
+
+		const getTodo = async () => {
+			error.value = '';
+
+			try {
+				const res = await axios.get(`http://localhost:3000/todos/${id}`);
+				todo.value = res.data;
+				loading.value = false;
+			} catch (err) {
+				error.value = 'Get Todo - Something went wrong. ' + err.message;
+			}
+		};
+		getTodo();
+
+		const toggleTodoStatus = async () => {
+			try {
+				await axios.patch(`http://localhost:3000/todos/${id}`, {
+					completed: !todo.value.completed,
+				});
+				todo.value.completed = !todo.value.completed;
+			} catch (err) {
+				error.value = 'Get Todo - Something went wrong. ' + err.message;
+			}
+		};
+
+		return {
+			todo,
+			loading,
+			toggleTodoStatus,
+		};
 	},
 };
 </script>
