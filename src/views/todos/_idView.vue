@@ -16,6 +16,7 @@
 						<label>Status</label>
 						<div>
 							<button
+								type="button"
 								class="btn"
 								:class="todo.completed == true ? 'btn-success' : 'btn-danger'"
 								@click.prevent="toggleTodoStatus"
@@ -27,14 +28,21 @@
 				</div>
 			</div>
 
-			<button class="btn btn-primary">Save</button>
+			<button type="submit" class="btn btn-primary">Save</button>
+			<button
+				type="button"
+				class="btn btn-outline-dark ml-2"
+				@click="moveToTodoListPage"
+			>
+				Cancel
+			</button>
 		</form>
 	</div>
 </template>
 
 <script>
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 
 export default {
@@ -43,6 +51,7 @@ export default {
 		const loading = ref(true);
 
 		const route = useRoute();
+		const router = useRouter();
 
 		const id = route.params.id;
 
@@ -72,10 +81,17 @@ export default {
 			}
 		};
 
+		const moveToTodoListPage = () => {
+			router.push({
+				name: 'Todos',
+			});
+		};
+
 		return {
 			todo,
 			loading,
 			toggleTodoStatus,
+			moveToTodoListPage,
 		};
 	},
 };
