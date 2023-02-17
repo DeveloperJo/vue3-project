@@ -27,7 +27,7 @@
     },
     {
       "subject": "d",
-      "completed": false,
+      "completed": true,
       "id": 8
     },
     {
@@ -37,13 +37,8 @@
     },
     {
       "subject": "g",
-      "completed": false,
+      "completed": true,
       "id": 11
-    },
-    {
-      "subject": "h",
-      "completed": false,
-      "id": 12
     },
     {
       "subject": "i",
