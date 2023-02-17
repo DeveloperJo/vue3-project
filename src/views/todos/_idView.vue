@@ -3,7 +3,7 @@
 		<h2>Todo Page</h2>
 		<hr />
 		<div v-if="loading">Loading ...</div>
-		<form v-else>
+		<form v-else @submit.prevent="onSave">
 			<div class="row">
 				<div class="col-6">
 					<div class="form-group">
@@ -72,12 +72,28 @@ export default {
 
 		const toggleTodoStatus = async () => {
 			try {
-				await axios.patch(`http://localhost:3000/todos/${id}`, {
-					completed: !todo.value.completed,
-				});
+				updateTodo(!todo.value.completed);
 				todo.value.completed = !todo.value.completed;
 			} catch (err) {
-				error.value = 'Get Todo - Something went wrong. ' + err.message;
+				error.value =
+					'toggle Todo Status - Something went wrong. ' + err.message;
+			}
+		};
+
+		const onSave = () => {
+			updateTodo(todo.value.completed);
+			moveToTodoListPage();
+		};
+
+		const updateTodo = async (completed) => {
+			error.value = '';
+			try {
+				await axios.patch(`http://localhost:3000/todos/${id}`, {
+					subject: todo.value.subject,
+					completed: completed,
+				});
+			} catch (err) {
+				error.value = 'update Todo - Something went wrong. ' + err.message;
 			}
 		};
 
@@ -92,6 +108,7 @@ export default {
 			loading,
 			toggleTodoStatus,
 			moveToTodoListPage,
+			onSave,
 		};
 	},
 };
