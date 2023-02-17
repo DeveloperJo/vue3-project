@@ -39,6 +39,7 @@
 				Cancel
 			</button>
 		</form>
+		<Toast v-if="showToast" :message="toastMessage" :type="toastType" />
 	</div>
 </template>
 
@@ -47,31 +48,47 @@ import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import _ from 'lodash';
+import Toast from '@/components/ToastAlert.vue';
 
 export default {
+	components: {
+		Toast,
+	},
 	setup() {
 		const todo = ref(null);
 		const originalTodo = ref(null);
 		const loading = ref(true);
+		const showToast = ref(false);
 
 		const route = useRoute();
 		const router = useRouter();
 
 		const id = route.params.id;
 
-		const error = ref('');
+		const toastMessage = ref('');
+		const toastType = ref('');
+
+		const sendToast = (type, message) => {
+			showToast.value = true;
+			toastType.value = type;
+			toastMessage.value = message;
+
+			setTimeout(() => {
+				toastMessage.value = '';
+				showToast.value = false;
+			}, 2000);
+		};
 
 		const getTodo = async () => {
-			error.value = '';
-
 			try {
 				const res = await axios.get(`http://localhost:3000/todos/${id}`);
 				todo.value = { ...res.data };
 				originalTodo.value = { ...res.data };
 
 				loading.value = false;
+				sendToast('success', 'Get Todo - success');
 			} catch (err) {
-				error.value = 'Get Todo - Something went wrong. ' + err.message;
+				sendToast('danger', 'Get Todo - Something went wrong. ' + err.message);
 			}
 		};
 		getTodo();
@@ -80,26 +97,35 @@ export default {
 			try {
 				updateTodo(!todo.value.completed);
 				todo.value.completed = !todo.value.completed;
+				//sendToast('success', '상태값이 변경되었습니다');
 			} catch (err) {
-				error.value =
-					'toggle Todo Status - Something went wrong. ' + err.message;
+				sendToast(
+					'danger',
+					'toggle Todo Status - Something went wrong. ' + err.message
+				);
 			}
 		};
 
 		const onSave = async () => {
 			await updateTodo(todo.value.completed);
+			// originalTodo.value = { ...todo.value };
 			moveToTodoListPage();
 		};
 
 		const updateTodo = async (completed) => {
-			error.value = '';
 			try {
 				await axios.patch(`http://localhost:3000/todos/${id}`, {
 					subject: todo.value.subject,
 					completed: completed,
 				});
+
+				sendToast('success', 'Updated Successfully.');
 			} catch (err) {
-				error.value = 'update Todo - Something went wrong. ' + err.message;
+				sendToast(
+					'danger',
+					'Update Todo - Something went wrong. ' + err.message
+				);
+				//error.value = ;
 			}
 		};
 
@@ -116,6 +142,9 @@ export default {
 		return {
 			todo,
 			loading,
+			showToast,
+			toastMessage,
+			toastType,
 			toggleTodoStatus,
 			moveToTodoListPage,
 			onSave,
