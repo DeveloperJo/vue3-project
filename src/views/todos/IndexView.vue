@@ -51,6 +51,7 @@
 				</ul>
 			</nav>
 		</div>
+		<Toast v-if="showToast" :message="toastMessage" :type="toastType" />
 	</div>
 </template>
 
@@ -59,11 +60,14 @@ import { ref, computed, watch } from 'vue';
 import TodoSimpleForm from '@/components/TodoSimpleForm.vue';
 import TodoList from '@/components/TodoList.vue';
 import axios from 'axios';
+import Toast from '@/components/ToastAlert.vue';
+import { useToast } from '@/composables/toast';
 
 export default {
 	components: {
 		TodoSimpleForm,
 		TodoList,
+		Toast,
 	},
 	setup() {
 		const todos = ref([]);
@@ -72,6 +76,8 @@ export default {
 		const limit = 5;
 		const currentPage = ref(1);
 		const searchText = ref('');
+
+		const { showToast, toastMessage, toastType, sendToast } = useToast();
 
 		const numberOfPages = computed(() => {
 			return Math.ceil(numberOfTodos.value / limit);
@@ -89,7 +95,8 @@ export default {
 				currentPage.value = page;
 				console.log(res.data);
 			} catch (err) {
-				error.value = 'Get Todo - Something went wrong. ' + err.message;
+				// error.value = 'Get Todo - Something went wrong. ' + err.message;
+				sendToast('danger', 'Get Todo - Something went wrong. ' + err.message);
 			}
 		};
 		getTodos();
@@ -126,7 +133,8 @@ export default {
 				//todos.value.push(res.data);
 				//console.log(res);
 			} catch (err) {
-				error.value = 'Add Todo - Something went wrong. ' + err.message;
+				//error.value = 'Add Todo - Something went wrong. ' + err.message;
+				sendToast('danger', 'Add Todo - Something went wrong. ' + err.message);
 			}
 
 			// .then((res) => {
@@ -153,7 +161,11 @@ export default {
 				});
 				todos.value[index].completed = checked; // !todos.value[index].completed;
 			} catch (err) {
-				error.value = 'Toggle Todo - Something went wrong. ' + err.message;
+				// error.value = 'Toggle Todo - Something went wrong. ' + err.message;
+				sendToast(
+					'danger',
+					'Toggle Todo - Something went wrong. ' + err.message
+				);
 			}
 		};
 
@@ -166,7 +178,11 @@ export default {
 				//todos.value.splice(index, 1);
 				getTodos(currentPage.value);
 			} catch (err) {
-				error.value = 'Delete Todo - Something went wrong. ' + err.message;
+				// error.value = 'Delete Todo - Something went wrong. ' + err.message;
+				sendToast(
+					'danger',
+					'Delete Todo - Something went wrong. ' + err.message
+				);
 			}
 		};
 
@@ -192,6 +208,9 @@ export default {
 			numberOfPages,
 			currentPage,
 			error,
+			showToast,
+			toastMessage,
+			toastType,
 		};
 	},
 };

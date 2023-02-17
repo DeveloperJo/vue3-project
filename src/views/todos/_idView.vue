@@ -49,6 +49,7 @@ import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import _ from 'lodash';
 import Toast from '@/components/ToastAlert.vue';
+import { useToast } from '@/composables/toast';
 
 export default {
 	components: {
@@ -58,26 +59,13 @@ export default {
 		const todo = ref(null);
 		const originalTodo = ref(null);
 		const loading = ref(true);
-		const showToast = ref(false);
 
 		const route = useRoute();
 		const router = useRouter();
 
 		const id = route.params.id;
 
-		const toastMessage = ref('');
-		const toastType = ref('');
-
-		const sendToast = (type, message) => {
-			showToast.value = true;
-			toastType.value = type;
-			toastMessage.value = message;
-
-			setTimeout(() => {
-				toastMessage.value = '';
-				showToast.value = false;
-			}, 2000);
-		};
+		const { showToast, toastMessage, toastType, sendToast } = useToast();
 
 		const getTodo = async () => {
 			try {
