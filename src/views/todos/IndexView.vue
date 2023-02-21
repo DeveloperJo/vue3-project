@@ -1,6 +1,10 @@
 <template>
 	<div>
-		<h2>To-Do List</h2>
+		<div class="d-flex justify-content-between">
+			<h2>To-Do List</h2>
+			<button class="btn btn-primary" @click="moveToCreatePage">Create</button>
+		</div>
+
 		<hr />
 		<input
 			class="form-control"
@@ -10,7 +14,6 @@
 			@keyup.enter="searchTodo"
 		/>
 		<hr />
-		<TodoSimpleForm @add-todo="addTodo" />
 		<div v-if="error != ''" class="text-danger">{{ error }}</div>
 		<div v-if="!todos.length">To-Do가 없습니다.</div>
 		<TodoList
@@ -57,15 +60,14 @@
 
 <script>
 import { ref, computed, watch } from 'vue';
-import TodoSimpleForm from '@/components/TodoSimpleForm.vue';
 import TodoList from '@/components/TodoList.vue';
 import axios from 'axios';
 import Toast from '@/components/ToastAlert.vue';
 import { useToast } from '@/composables/toast';
+import { useRouter } from 'vue-router';
 
 export default {
 	components: {
-		TodoSimpleForm,
 		TodoList,
 		Toast,
 	},
@@ -76,6 +78,7 @@ export default {
 		const limit = 5;
 		const currentPage = ref(1);
 		const searchText = ref('');
+		const router = useRouter();
 
 		const { showToast, toastMessage, toastType, sendToast } = useToast();
 
@@ -120,36 +123,6 @@ export default {
 				getTodos(numberOfPages.value);
 		});
 
-		const addTodo = async (todo) => {
-			// 데이터베이스 Todo 저장 - 비동기
-			error.value = '';
-			try {
-				await axios.post('http://localhost:3000/todos', {
-					//id: todo.id,
-					subject: todo.subject,
-					completed: todo.completed,
-				});
-				getTodos(1);
-				//todos.value.push(res.data);
-				//console.log(res);
-			} catch (err) {
-				//error.value = 'Add Todo - Something went wrong. ' + err.message;
-				sendToast('danger', 'Add Todo - Something went wrong. ' + err.message);
-			}
-
-			// .then((res) => {
-			// 	console.log(res);
-			// 	if (res.status == 201) {
-			// 		// todo에 array 저장
-			// 		todos.value.push(res.data);
-			// 	}
-			// })
-			// .catch((err) => {
-			// 	console.log(err);
-			// 	error.value = 'Something went wrong. ' + err.message;
-			// });
-		};
-
 		const toggleTodo = async (index, checked) => {
 			console.log(checked);
 			const id = todos.value[index].id;
@@ -186,6 +159,12 @@ export default {
 			}
 		};
 
+		const moveToCreatePage = () => {
+			router.push({
+				name: 'TodoCreate',
+			});
+		};
+
 		// const filteredTodos = computed(() => {
 		// 	if (searchText.value) {
 		// 		return todos.value.filter((todo) => {
@@ -200,7 +179,7 @@ export default {
 			todos,
 			getTodos,
 			searchTodo,
-			addTodo,
+			// addTodo,
 			toggleTodo,
 			deleteTodo,
 			searchText,
@@ -211,6 +190,7 @@ export default {
 			showToast,
 			toastMessage,
 			toastType,
+			moveToCreatePage,
 		};
 	},
 };
