@@ -123,6 +123,10 @@ export default {
 		};
 
 		const updateTodo = async (completed) => {
+			if (todo.value.subject == '') {
+				sendToast('danger', 'Subject is required');
+				return;
+			}
 			try {
 				const data = {
 					subject: todo.value.subject,
