@@ -28,7 +28,11 @@
 			</div>
 		</div>
 		<Teleport to="#modal">
-			<Modal :showModal="showModal" @close="closeModal" @delete="deleteTodo" />
+			<DeleteModal
+				:showModal="showModal"
+				@close="closeModal"
+				@delete="deleteTodo"
+			/>
 		</Teleport>
 	</div>
 </template>
@@ -36,11 +40,13 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import Modal from '@/components/ModalDialog.vue';
+// import Modal from '@/components/ModalDialog.vue';
+import DeleteModal from '@/components/DeleteModal.vue';
+
 export default {
 	// props: ['todos'],
 	components: {
-		Modal,
+		DeleteModal,
 	},
 	props: {
 		todos: {

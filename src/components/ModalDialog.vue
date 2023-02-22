@@ -4,19 +4,14 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h1 class="modal-title fs-5">Delete Todo</h1>
+						<h1 class="modal-title fs-5"><slot name="title"></slot></h1>
 						<button type="button" class="btn-close" @click="onClose"></button>
 					</div>
 					<div class="modal-body">
-						Are you sure you want to delete the todo?
+						<slot name="body"></slot>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" @click="onClose">
-							Close
-						</button>
-						<button type="button" class="btn btn-danger" @click="onDelete">
-							Delete
-						</button>
+						<slot name="footer"></slot>
 					</div>
 				</div>
 			</div>
@@ -37,13 +32,8 @@ export default {
 			emit('close');
 		};
 
-		const onDelete = () => {
-			emit('delete');
-		};
-
 		return {
 			onClose,
-			onDelete,
 		};
 	},
 };
