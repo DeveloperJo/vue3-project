@@ -20,21 +20,26 @@
 				<div>
 					<button
 						class="btn btn-danger btn-small"
-						@click.stop="deleteTodo(index)"
+						@click.stop="openModal(t.id)"
 					>
 						Delete
 					</button>
 				</div>
 			</div>
 		</div>
+		<Modal :showModal="showModal" @close="closeModal" @delete="deleteTodo" />
 	</div>
 </template>
 
 <script>
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-
+import Modal from '@/components/ModalDialog.vue';
 export default {
 	// props: ['todos'],
+	components: {
+		Modal,
+	},
 	props: {
 		todos: {
 			type: Array,
@@ -44,12 +49,27 @@ export default {
 	emits: ['toggle-todo', 'delete-todo'],
 	setup(props, { emit }) {
 		const router = useRouter();
+		const showModal = ref(false);
+		const deleteTodoId = ref(null);
 		const toggleTodo = (index, event) => {
 			emit('toggle-todo', index, event.target.checked);
 		};
 
-		const deleteTodo = (index) => {
-			emit('delete-todo', index);
+		const openModal = (id) => {
+			showModal.value = true;
+			deleteTodoId.value = id;
+		};
+
+		const closeModal = () => {
+			deleteTodoId.value = null;
+			showModal.value = false;
+		};
+
+		const deleteTodo = () => {
+			// console.log(index);
+			emit('delete-todo', deleteTodoId.value);
+
+			closeModal();
 		};
 
 		const moveToPage = (id) => {
@@ -66,6 +86,9 @@ export default {
 			toggleTodo,
 			deleteTodo,
 			moveToPage,
+			showModal,
+			openModal,
+			closeModal,
 		};
 	},
 };

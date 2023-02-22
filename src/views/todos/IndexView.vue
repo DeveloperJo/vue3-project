@@ -142,8 +142,8 @@ export default {
 			}
 		};
 
-		const deleteTodo = async (index) => {
-			const id = todos.value[index].id;
+		const deleteTodo = async (id) => {
+			// const id = todos.value[index].id;
 
 			error.value = '';
 			try {

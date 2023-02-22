@@ -36,11 +36,6 @@
       "id": 9
     },
     {
-      "subject": "g",
-      "completed": true,
-      "id": 11
-    },
-    {
       "subject": "i",
       "completed": true,
       "id": 13
@@ -49,23 +44,6 @@
       "subject": "ddㅇ ",
       "completed": true,
       "id": 14
-    },
-    {
-      "subject": "gkgkgk",
-      "completed": true,
-      "body": "fff",
-      "id": 15
-    },
-    {
-      "subject": "fsff",
-      "completed": true,
-      "body": "ffff",
-      "id": 16
-    },
-    {
-      "subject": "ddff",
-      "completed": false,
-      "id": 17
     }
   ]
 }
