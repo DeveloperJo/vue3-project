@@ -27,10 +27,9 @@
 				</div>
 			</div>
 		</div>
-		<Modal :showModal="showModal" @close="closeModal" @delete="deleteTodo" />
-		<teleport to="#devJo">
-			<div>Develeloper Jo</div>
-		</teleport>
+		<Teleport to="#modal">
+			<Modal :showModal="showModal" @close="closeModal" @delete="deleteTodo" />
+		</Teleport>
 	</div>
 </template>
 
