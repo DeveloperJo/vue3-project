@@ -16,11 +16,6 @@
       "id": 5
     },
     {
-      "subject": "b",
-      "completed": false,
-      "id": 6
-    },
-    {
       "subject": "ggg",
       "completed": true,
       "id": 7
@@ -34,11 +29,6 @@
       "subject": "e",
       "completed": true,
       "id": 9
-    },
-    {
-      "subject": "i",
-      "completed": true,
-      "id": 13
     }
   ]
 }
