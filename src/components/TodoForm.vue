@@ -8,7 +8,7 @@
 						<label>Subject</label>
 						<input type="text" class="form-control" v-model="todo.subject" />
 					</div> -->
-					<Input label="Subject" v-model:value="todo.subject"> </Input>
+					<Input label="Subject" v-model="todo.subject"> </Input>
 				</div>
 				<div v-if="editing == true" class="col-6">
 					<div class="form-group">

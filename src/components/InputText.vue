@@ -19,6 +19,7 @@ export default {
 			required: true,
 		},
 	},
+	emits: ['update:value'],
 	setup(props, { emit }) {
 		const onInput = (e) => {
 			emit('update:value', e.target.value);
