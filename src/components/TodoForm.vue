@@ -48,9 +48,9 @@
 				Cancel
 			</button>
 		</form>
-		<Transition name="slide">
+		<transition name="slide">
 			<Toast v-if="showToast" :message="toastMessage" :type="toastType" />
-		</Transition>
+		</transition>
 	</div>
 </template>
 
