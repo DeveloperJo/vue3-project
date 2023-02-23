@@ -4,10 +4,11 @@
 		<form v-else @submit.prevent="onSave">
 			<div class="row">
 				<div class="col-6">
-					<div class="form-group">
+					<!-- <div class="form-group">
 						<label>Subject</label>
 						<input type="text" class="form-control" v-model="todo.subject" />
-					</div>
+					</div> -->
+					<Input label="Subject" v-model:value="todo.subject"> </Input>
 				</div>
 				<div v-if="editing == true" class="col-6">
 					<div class="form-group">
@@ -55,15 +56,17 @@
 </template>
 
 <script>
-import { computed, ref } from 'vue';
+import { computed, ref, onUpdated } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import _ from 'lodash';
 import Toast from '@/components/ToastAlert.vue';
 import { useToast } from '@/composables/toast';
+import Input from '@/components/InputText.vue';
 
 export default {
 	components: {
+		Input,
 		Toast,
 	},
 	props: {
@@ -86,6 +89,10 @@ export default {
 		const id = route.params.id;
 
 		const { showToast, toastMessage, toastType, sendToast } = useToast();
+
+		onUpdated(() => {
+			console.log(todo.value.subject);
+		});
 
 		const getTodo = async () => {
 			loading.value = true;
