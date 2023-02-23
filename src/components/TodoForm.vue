@@ -8,7 +8,12 @@
 						<label>Subject</label>
 						<input type="text" class="form-control" v-model="todo.subject" />
 					</div> -->
-					<Input label="Subject" v-model="todo.subject"> </Input>
+					<Input
+						label="Subject"
+						:value="todo.subject"
+						@update-value="updateSubject"
+					>
+					</Input>
 				</div>
 				<div v-if="editing == true" class="col-6">
 					<div class="form-group">
@@ -93,6 +98,10 @@ export default {
 		onUpdated(() => {
 			console.log(todo.value.subject);
 		});
+
+		const updateSubject = (subject) => {
+			todo.value.subject = subject;
+		};
 
 		const getTodo = async () => {
 			loading.value = true;
@@ -183,6 +192,7 @@ export default {
 			moveToTodoListPage,
 			onSave,
 			todoUpdated,
+			updateSubject,
 		};
 	},
 };
