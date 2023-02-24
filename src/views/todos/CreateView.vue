@@ -8,7 +8,7 @@
 
 <script>
 import { ref } from 'vue';
-import axios from 'axios';
+import axios from '@/axios';
 import { useToast } from '@/composables/toast';
 import TodoForm from '@/components/TodoForm.vue';
 
@@ -39,7 +39,7 @@ export default {
 		const addTodo = async (todo) => {
 			// 데이터베이스 Todo 저장 - 비동기
 			try {
-				await axios.post('http://localhost:3000/todos', {
+				await axios.post('todos', {
 					//id: todo.id,
 					subject: todo.subject,
 					completed: todo.completed,

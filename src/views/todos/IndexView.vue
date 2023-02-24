@@ -61,7 +61,7 @@
 <script>
 import { ref, computed, watch } from 'vue';
 import TodoList from '@/components/TodoList.vue';
-import axios from 'axios';
+import axios from '@/axios';
 import Toast from '@/components/ToastAlert.vue';
 import { useToast } from '@/composables/toast';
 import { useRouter } from 'vue-router';
@@ -90,7 +90,7 @@ export default {
 			error.value = '';
 			try {
 				const res = await axios.get(
-					`http://localhost:3000/todos?_sort=id&_order=desc&subject_like=${searchText.value}&_page=${page}&_limit=${limit}`
+					`todos?_sort=id&_order=desc&subject_like=${searchText.value}&_page=${page}&_limit=${limit}`
 				);
 				// console.log(res);
 				numberOfTodos.value = res.headers['x-total-count'];
@@ -129,7 +129,7 @@ export default {
 
 			error.value = '';
 			try {
-				await axios.patch('http://localhost:3000/todos/' + id, {
+				await axios.patch('todos/' + id, {
 					completed: checked, // !todos.value[index].completed,
 				});
 				todos.value[index].completed = checked; // !todos.value[index].completed;
@@ -147,7 +147,7 @@ export default {
 
 			error.value = '';
 			try {
-				await axios.delete('http://localhost:3000/todos/' + id);
+				await axios.delete('todos/' + id);
 				//todos.value.splice(index, 1);
 				getTodos(currentPage.value);
 			} catch (err) {
