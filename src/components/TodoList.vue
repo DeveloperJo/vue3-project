@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { getCurrentInstance, ref } from 'vue';
 import { useRouter } from 'vue-router';
 // import Modal from '@/components/ModalDialog.vue';
 import DeleteModal from '@/components/DeleteModal.vue';
@@ -59,7 +59,8 @@ export default {
 		},
 	},
 	emits: ['toggle-todo', 'delete-todo'],
-	setup(props, { emit }) {
+	setup() {
+		const { emit } = getCurrentInstance();
 		const router = useRouter();
 		const showModal = ref(false);
 		const deleteTodoId = ref(null);

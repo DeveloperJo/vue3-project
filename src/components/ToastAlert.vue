@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { getCurrentInstance } from 'vue';
 // import { ref } from '@vue/reactivity';
 export default {
 	props: {
@@ -19,7 +20,8 @@ export default {
 			required: true,
 		},
 	},
-	setup(props) {
+	setup() {
+		const { props } = getCurrentInstance();
 		const alertClass =
 			props.type == 'success' ? 'alert-success' : 'alert-danger';
 

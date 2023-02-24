@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import { getCurrentInstance } from 'vue';
 export default {
 	props: {
 		label: {
@@ -20,7 +21,8 @@ export default {
 		},
 	},
 	emits: ['update-value'],
-	setup(props, { emit }) {
+	setup() {
+		const { emit } = getCurrentInstance();
 		const onInput = (e) => {
 			emit('update-value', e.target.value);
 		};

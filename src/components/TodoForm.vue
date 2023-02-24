@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { computed, ref, onUpdated } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import _ from 'lodash';
@@ -80,7 +80,8 @@ export default {
 			default: false,
 		},
 	},
-	setup(props) {
+	setup() {
+		const { props } = getCurrentInstance();
 		const todo = ref({
 			subject: '',
 			completed: false,
@@ -95,10 +96,6 @@ export default {
 
 		const { showToast, toastMessage, toastType, sendToast } = useToast();
 
-		onUpdated(() => {
-			console.log(todo.value.subject);
-		});
-
 		const updateSubject = (subject) => {
 			todo.value.subject = subject;
 		};
@@ -110,7 +107,6 @@ export default {
 				todo.value = { ...res.data };
 				originalTodo.value = { ...res.data };
 
-				loading.value = false;
 				sendToast('success', 'Get Todo - success');
 
 				loading.value = false;
