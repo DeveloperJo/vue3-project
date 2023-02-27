@@ -105,10 +105,7 @@ export default {
 				todo.value = { ...res.data };
 				originalTodo.value = { ...res.data };
 
-				console.log(showToast.value);
 				sendToast('success', 'Get Todo - success');
-				console.log(showToast.value);
-				console.log(toastMessage.value);
 
 				loading.value = false;
 			} catch (err) {
