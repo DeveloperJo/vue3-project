@@ -1,27 +1,16 @@
-import { ref, onUnmounted } from 'vue';
+import { useStore } from 'vuex';
+import { computed } from 'vue';
 
 export const useToast = () => {
-	const showToast = ref(false);
-	const toastMessage = ref('');
-	const toastType = ref('');
+	const store = useStore();
 
-	const timeout = ref(null);
+	const toastMessage = computed(() => store.getters.toastMessageWithSmile);
+	const toastType = computed(() => store.state.toastType);
+	const showToast = computed(() => store.state.showToast);
 
 	const sendToast = (type = 'success', message) => {
-		showToast.value = true;
-		toastType.value = type;
-		toastMessage.value = message;
-
-		timeout.value = setTimeout(() => {
-			toastMessage.value = '';
-			showToast.value = false;
-		}, 2000);
+		store.dispatch('sendToast', message, type);
 	};
-
-	// view 나가기 전에, 메모리 정리
-	onUnmounted(() => {
-		clearTimeout(timeout.value);
-	});
 
 	return {
 		showToast,

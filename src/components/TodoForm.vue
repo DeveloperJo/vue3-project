@@ -54,9 +54,6 @@
 				Cancel
 			</button>
 		</form>
-		<transition name="slide">
-			<Toast v-if="showToast" :message="toastMessage" :type="toastType" />
-		</transition>
 	</div>
 </template>
 
@@ -65,14 +62,13 @@ import { computed, getCurrentInstance, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from '@/axios';
 import _ from 'lodash';
-import Toast from '@/components/ToastAlert.vue';
 import { useToast } from '@/composables/toast';
 import Input from '@/components/InputText.vue';
 
 export default {
 	components: {
 		Input,
-		Toast,
+		// Toast,
 	},
 	props: {
 		editing: {
@@ -80,8 +76,12 @@ export default {
 			default: false,
 		},
 	},
+	// emits: ['send-toast'],
 	setup() {
 		const { props } = getCurrentInstance();
+
+		const { showToast, toastMessage, toastType, sendToast } = useToast();
+
 		const todo = ref({
 			subject: '',
 			completed: false,
@@ -94,8 +94,6 @@ export default {
 
 		const id = route.params.id;
 
-		const { showToast, toastMessage, toastType, sendToast } = useToast();
-
 		const updateSubject = (subject) => {
 			todo.value.subject = subject;
 		};
@@ -107,11 +105,15 @@ export default {
 				todo.value = { ...res.data };
 				originalTodo.value = { ...res.data };
 
+				console.log(showToast.value);
 				sendToast('success', 'Get Todo - success');
+				console.log(showToast.value);
+				console.log(toastMessage.value);
 
 				loading.value = false;
 			} catch (err) {
 				sendToast('danger', 'Get Todo - Something went wrong. ' + err.message);
+
 				loading.value = false;
 			}
 		};
@@ -121,7 +123,7 @@ export default {
 			try {
 				updateTodo(!todo.value.completed);
 				todo.value.completed = !todo.value.completed;
-				//sendToast('success', '상태값이 변경되었습니다');
+				sendToast('success', '상태값이 변경되었습니다');
 			} catch (err) {
 				sendToast(
 					'danger',
@@ -133,12 +135,15 @@ export default {
 		const onSave = async () => {
 			await updateTodo(todo.value.completed);
 			// originalTodo.value = { ...todo.value };
-			// moveToTodoListPage();
+			if (!props.editing) {
+				moveToTodoListPage();
+			}
 		};
 
 		const updateTodo = async (completed) => {
 			if (todo.value.subject == '') {
 				sendToast('danger', 'Subject is required');
+				// emit('send-toast', { type: 'danger', message: 'Subject is required' });
 				return;
 			}
 			try {
@@ -194,24 +199,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.slide-enter-active {
-	transition: all 0.3s ease-out;
-}
-
-.slide-leave-active {
-	transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
-}
-
-.slide-enter-from,
-.slide-leave-to {
-	opacity: 0;
-	transform: traslateX(30px);
-}
-/*
-.slide-enter-to .slide-leave-from {
-	opacity: 1;
-	transform: traslateY(0px);
-}
-*/
-</style>
+<style scoped></style>

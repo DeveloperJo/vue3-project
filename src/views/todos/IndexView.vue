@@ -96,7 +96,7 @@ export default {
 				numberOfTodos.value = res.headers['x-total-count'];
 				todos.value = res.data;
 				currentPage.value = page;
-				console.log(res.data);
+				// console.log(res.data);
 			} catch (err) {
 				// error.value = 'Get Todo - Something went wrong. ' + err.message;
 				sendToast('danger', 'Get Todo - Something went wrong. ' + err.message);
