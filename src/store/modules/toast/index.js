@@ -40,7 +40,7 @@ export default {
 				// commit('UPDATE_TOAST_MESSAGE', '');
 				// commit('UPDATE_TOAST_STATUS', false);
 				commit('REMOVE_TOAST');
-			}, 10000);
+			}, 3000);
 		},
 	},
 	getters: {

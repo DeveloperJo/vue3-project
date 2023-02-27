@@ -14,7 +14,6 @@
 			@keyup.enter="searchTodo"
 		/>
 		<hr />
-		<div v-if="error != ''" class="text-danger">{{ error }}</div>
 		<div v-if="!todos.length">To-Do가 없습니다.</div>
 		<TodoList
 			:todos="todos"
@@ -22,80 +21,53 @@
 			@delete-todo="deleteTodo"
 		/>
 		<hr />
-		<div>
-			<nav aria-label="Page navigation example">
-				<ul class="pagination">
-					<li v-if="currentPage !== 1" class="page-item">
-						<a
-							class="page-link"
-							@click="getTodos(currentPage - 1)"
-							aria-label="Previous"
-						>
-							<span aria-hidden="true">&laquo;</span>
-						</a>
-					</li>
-					<li
-						class="page-item"
-						:class="currentPage === page ? 'active' : ''"
-						v-for="page in numberOfPages"
-						:key="page"
-					>
-						<a class="page-link" @click="getTodos(page)">{{ page }}</a>
-					</li>
-					<li v-if="currentPage !== numberOfPages" class="page-item">
-						<a
-							class="page-link"
-							@click="getTodos(currentPage + 1)"
-							aria-label="Next"
-						>
-							<span aria-hidden="true">&raquo;</span>
-						</a>
-					</li>
-				</ul>
-			</nav>
-		</div>
+
+		<PaginationList
+			v-if="todos.length"
+			:numberOfPages="numberOfPages"
+			:currentPage="currentPage"
+			@page-click="getTodos"
+		/>
 	</div>
 </template>
 
 <script>
 import { ref, computed, watch } from 'vue';
 import TodoList from '@/components/TodoList.vue';
+import PaginationList from '@/components/PaginationList.vue';
 import axios from '@/axios';
-import { useToast } from '@/composables/toast';
 import { useRouter } from 'vue-router';
+import { useToast } from '@/composables/toast';
 
 export default {
 	components: {
 		TodoList,
+		PaginationList,
 	},
 	setup() {
 		const todos = ref([]);
-		const error = ref('');
-		const numberOfTodos = ref(0);
-		const limit = 5;
-		const currentPage = ref(1);
+
 		const searchText = ref('');
 		const router = useRouter();
 
-		const { showToast, toastMessage, toastType, sendToast } = useToast();
+		const { sendToast } = useToast();
 
+		const numberOfTodos = ref(0);
+		let limit = 5;
+		const currentPage = ref(1);
 		const numberOfPages = computed(() => {
 			return Math.ceil(numberOfTodos.value / limit);
 		});
 
 		const getTodos = async (page = currentPage.value) => {
-			error.value = '';
 			try {
 				const res = await axios.get(
 					`todos?_sort=id&_order=desc&subject_like=${searchText.value}&_page=${page}&_limit=${limit}`
 				);
-				// console.log(res);
 				numberOfTodos.value = res.headers['x-total-count'];
 				todos.value = res.data;
 				currentPage.value = page;
-				// console.log(res.data);
 			} catch (err) {
-				// error.value = 'Get Todo - Something went wrong. ' + err.message;
 				sendToast('danger', 'Get Todo - Something went wrong. ' + err.message);
 			}
 		};
@@ -124,14 +96,12 @@ export default {
 			console.log(checked);
 			const id = todos.value[index].id;
 
-			error.value = '';
 			try {
 				await axios.patch('todos/' + id, {
 					completed: checked, // !todos.value[index].completed,
 				});
 				todos.value[index].completed = checked; // !todos.value[index].completed;
 			} catch (err) {
-				// error.value = 'Toggle Todo - Something went wrong. ' + err.message;
 				sendToast(
 					'danger',
 					'Toggle Todo - Something went wrong. ' + err.message
@@ -142,13 +112,11 @@ export default {
 		const deleteTodo = async (id) => {
 			// const id = todos.value[index].id;
 
-			error.value = '';
 			try {
 				await axios.delete('todos/' + id);
 				//todos.value.splice(index, 1);
 				getTodos(currentPage.value);
 			} catch (err) {
-				// error.value = 'Delete Todo - Something went wrong. ' + err.message;
 				sendToast(
 					'danger',
 					'Delete Todo - Something went wrong. ' + err.message
@@ -183,18 +151,10 @@ export default {
 			// filteredTodos,
 			numberOfPages,
 			currentPage,
-			error,
-			showToast,
-			toastMessage,
-			toastType,
 			moveToCreatePage,
 		};
 	},
 };
 </script>
 
-<style scoped>
-a.page-link {
-	cursor: pointer;
-}
-</style>
+<style></style>

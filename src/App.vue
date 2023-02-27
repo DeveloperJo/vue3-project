@@ -1,23 +1,6 @@
 <template>
 	<div>
-		<nav class="navbar navbar-expand-lg bg-body-tertiary">
-			<div class="container-fluid">
-				<router-link class="navbar-brand" :to="{ name: 'Home' }"
-					>Dev. Jo</router-link
-				>
-
-				<ul class="navbar-nav mr-auto">
-					<li class="nav-item">
-						<router-link
-							class="nav-link active"
-							aria-current="page"
-							:to="{ name: 'Todos' }"
-							>Todos</router-link
-						>
-					</li>
-				</ul>
-			</div>
-		</nav>
+		<NavbarTop />
 		<div class="container">
 			<router-view />
 		</div>
@@ -28,10 +11,12 @@
 
 <script>
 import Toast from '@/components/ToastAlert.vue';
+import NavbarTop from '@/components/NavbarTop.vue';
 
 export default {
 	components: {
 		Toast,
+		NavbarTop,
 	},
 	setup() {},
 };
