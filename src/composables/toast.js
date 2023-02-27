@@ -4,12 +4,14 @@ import { computed } from 'vue';
 export const useToast = () => {
 	const store = useStore();
 
-	const toastMessage = computed(() => store.getters.toastMessageWithSmile);
-	const toastType = computed(() => store.state.toastType);
-	const showToast = computed(() => store.state.showToast);
+	const toastMessage = computed(
+		() => store.getters['toast/toastMessageWithSmile']
+	);
+	const toastType = computed(() => store.state.toast.toastType);
+	const showToast = computed(() => store.state.toast.showToast);
 
 	const sendToast = (type = 'success', message) => {
-		store.dispatch('sendToast', message, type);
+		store.dispatch('toast/sendToast', message, type);
 	};
 
 	return {
