@@ -24,15 +24,15 @@ export default {
 		},
 	},
 	actions: {
-		sendToast({ commit }, message, type = 'success') {
+		sendToast({ commit }, payload) {
 			// commit('UPDATE_TOAST_TYPE', type);
 			// commit('UPDATE_TOAST_MESSAGE', message);
 			// commit('UPDATE_TOAST_STATUS', true);
 
 			commit('ADD_TOAST', {
 				id: Date.now(),
-				message,
-				type,
+				message: payload.message,
+				type: payload.type,
 			});
 
 			setTimeout(() => {

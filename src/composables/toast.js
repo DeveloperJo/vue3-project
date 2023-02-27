@@ -12,7 +12,7 @@ export const useToast = () => {
 	const toasts = computed(() => store.state.toast.toasts);
 
 	const sendToast = (type = 'success', message) => {
-		store.dispatch('toast/sendToast', message, type);
+		store.dispatch('toast/sendToast', { type, message });
 	};
 
 	return {
